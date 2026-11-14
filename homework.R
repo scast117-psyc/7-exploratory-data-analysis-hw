@@ -1,6 +1,7 @@
 library(tidyverse)
 library(DataExplorer)
 library(rstatix)
+library(here)
 
 stations <- c("KCLT", "KCQT", "KHOU", "KIND", "KJAX", "KMDW", "KNYC", "KPHL", "KPHX", "KSEA")
 cities <- c("Charlotte", "Los Angeles", "Houston", "Indianapolis", "Jacksonville", 
@@ -14,7 +15,53 @@ cities <- c("Charlotte", "Los Angeles", "Houston", "Indianapolis", "Jacksonville
 #> The function should return a tibble
 #> Call the function "read_weather" 
 #> Check by reading/glimpsing a single station's file
+here()
 
+read_weather <- function(s) {
+
+if (s== "KCLT") {
+  charlotte <- read_csv("us-weather-history/KCLT.csv")
+  charlotte <- charlotte |> mutate(station = "Charlotte", .before=1)
+  return(charlotte)
+} else if (s == "KCQT") {
+  la <- read_csv("us-weather-history/KCQT.csv")
+  la <- la |> mutate(station = "Los Angeles", .before=1)
+  return(la)
+} else if (s == "KHOU") {
+  hou <- read_csv("us-weather-history/KHOU.csv")
+  hou <- hou |> mutate(station = "Houston", .before =1)
+  return(hou)
+} else if (s == "KIND") {
+  ind <- read_csv("us-weather-history/KIND.csv")
+  ind <- ind |> mutate(station = "Indianapolis", .before=1)
+  return(ind)
+} else if (s == "KJAX") {
+  jax <- read_csv("us-weather-history/KJAX.csv")
+  jax <- jax |> mutate(station = "Jacksonville", .before=1)
+  return(jax)
+} else if (s == "KMDW") {
+  chi <- read_csv("us-weather-history/KMDW.csv")
+  chi <- chi |> mutate(station = "Chicago", .before=1)
+  return(chi)
+} else if (s == "KNYC") {
+  nyc <- read_csv("us-weather-history/KNYC.csv")
+  nyc <- nyc |> mutate(station = "New York City", .before=1)
+  return(nyc)
+} else if (s == "KPHL") {
+  phi <- read_csv("us-weather-history/KPHL.csv")
+  phi <- phi |> mutate(station = "Philadelphia", .before=1)
+  return(phi)
+} else if (s == "KPHX") {
+  phx <- read_csv("us-weather-history/KPHX.csv")
+  phx <- phx |> mutate(station = "Phoenix", .before=1)
+  return(phx)
+} else if (s == "KSEA") {
+  sea <- read_csv("us-weather-history/KSEA.csv")
+  sea <- sea |> mutate(station = "Seattle", .before=1)
+  return(sea)
+}}
+read_weather("KCLT")
+  
 
 
 # QUESTION 2
@@ -23,7 +70,8 @@ cities <- c("Charlotte", "Los Angeles", "Houston", "Indianapolis", "Jacksonville
 #> you will need to do so in the code with bind_rows()
 #> Save the resulting dataset to "ds"
 
-
+ds <- map(stations, read_weather) %>% bind_rows()
+view(ds)
 
 
 # QUESTION 3
@@ -33,32 +81,64 @@ cities <- c("Charlotte", "Los Angeles", "Houston", "Indianapolis", "Jacksonville
 #> and save the results to a new tibble
 #> Write a logical statement that would trigger a warning if any city did not have 365 days
 
+city <- factor(stations)
+freq <- freq_table(ds$station)
 
-
-
+if(any(freq$n != 365)) {
+  print("A city does NOT have 365 days")
+  print(freq)
+} else {
+    print("All cities have 365")
+  }
+  
 # QUESTION 4
 #> In question 3, all of the cities do have 365 days of data, so how would you know
 #> if your check worked? Create a test to mess up the dataset to make sure that your
 #> check does throw an error if the conditions aren't met
 
 
+freq2 <- freq %>% mutate(n2 = n+1)
+
+if(any(freq2$n2 != 365)) {
+  print("A city does NOT have 365 days")
+  print(freq)
+} else {
+  print("All cities have 365")
+}
 
 #> At this point, your data should look like the "compiled_data.csv" file
 #> in data-clean. If it isn't, read in that file to use for the remaining
 #> questions so that you have the right data to work with.
+here()
+
+library(readr)
+ds2 <- read_csv("data-clean/compiled_data.csv")
+View(ds2)
 
 # QUESTION 5
 #> Find a function that lets you pull out the month from the date 
 #> and make "month" a factor as a new variable in ds
 
+library(lubridate)
+?`lubridate-package`
+
+date2 <- function(date) {
+  ds2 %>% mutate(month = as.factor(month(ds2$date, label = T, abbr = T)), .before= "date")
+} 
+
+date2(ds2)
+ds2 <- date2(ds2)
+view(ds2)
 
 
 # QUESTION 7
 #> Use rstatix to check if there are any outliers for actual_mean_temp.
-#> Save the outliers to a new tibble.
+#> Save the outliers to a new tibble.  
 #> In a piped statement, filter out those outliers from ds and then use
 #> get_summary_stats() to get the mean and SE for actual_mean_temp
 #> by month.
+
+  
 
 
 # QUESTION 8
