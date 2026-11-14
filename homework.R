@@ -3,6 +3,9 @@ library(DataExplorer)
 library(rstatix)
 library(here)
 
+#Dylan and Amberley as collaborators thank yewww 
+
+
 stations <- c("KCLT", "KCQT", "KHOU", "KIND", "KJAX", "KMDW", "KNYC", "KPHL", "KPHX", "KSEA")
 cities <- c("Charlotte", "Los Angeles", "Houston", "Indianapolis", "Jacksonville", 
             "Chicago", "New York City", "Philadelphia", "Phoenix", "Seattle")
@@ -138,10 +141,16 @@ view(ds2)
 #> get_summary_stats() to get the mean and SE for actual_mean_temp
 #> by month.
 
-  
+?`rstatix-programming`  
+
+outliers <- identify_outliers(ds2,actual_mean_temp)
+?anti_join
+
+temp_stats <- ds2 %>% anti_join(outliers, by = join_by(actual_mean_temp)) %>% group_by(month) %>% get_summary_stats(actual_mean_temp)
+view(temp_stats)
 
 
-# QUESTION 8
+#`rstatix-programming`# QUESTION 8
 #> Use the Data Explorer package to plot boxplots of all of the numeric variables in the dataset
 #> grouped by city, then do the same thing grouped by month. 
 #> Finally, use plot_correlation to investigate correlations between the continuous variables only
