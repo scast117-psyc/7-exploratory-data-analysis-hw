@@ -148,7 +148,7 @@ outliers <- identify_outliers(ds2,actual_mean_temp)
 
 temp_stats <- ds2 %>% anti_join(outliers, by = join_by(actual_mean_temp)) %>% group_by(month) %>% get_summary_stats(actual_mean_temp)
 view(temp_stats)
-
+#I think this is what yall wanted? 
 
 #`rstatix-programming`# QUESTION 8
 #> Use the Data Explorer package to plot boxplots of all of the numeric variables in the dataset
