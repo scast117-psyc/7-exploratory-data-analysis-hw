@@ -142,7 +142,7 @@ view(ds2)
 #> by month.
 
 ?`rstatix-programming`  
-
+??identify_outliers
 outliers <- identify_outliers(ds2,actual_mean_temp)
 ?anti_join
 
